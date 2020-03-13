@@ -31,7 +31,7 @@ char** allocate_2D_char(int Nx, int Ny) {
 }
 
 void read_graph_from_file1 (char *filename, int *N, char ***table2D) {
-    
+
     int edges;
     int from;
     int to;
@@ -57,7 +57,7 @@ void read_graph_from_file1 (char *filename, int *N, char ***table2D) {
     }
 }
 
-void read_graph_from_file2 (char *filename, int *N, int *N_links, int **row_ptr, int **col_idx) {
+void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, int **col_idx) {
 
     int from;
     int to;
@@ -78,28 +78,51 @@ void read_graph_from_file2 (char *filename, int *N, int *N_links, int **row_ptr,
     fscanf(infile, "%*[^\n]\n"); // skip one line
 
     fscanf(infile, "%*s %*s %d %*s %d \n", N, N_links);
+    int *from_arr = malloc(*N_links*sizeof(int));
+    int *to_arr = malloc(*N_links*sizeof(int));
     //printf("%d %d\n", *N, *N_links);
     *col_idx = malloc(*N_links*sizeof(int));
     *row_ptr = malloc((*N + 1)*sizeof(int));
     (*row_ptr)[0] = 0; // First row starts on index zero
 
     fscanf(infile, "%*[^\n]\n"); // skip one line
-
     
     while (fscanf(infile, "%d %d\n", &from, &to) != EOF) {
-        if(to != from) {
-            (*col_idx)[col_idx_ind] = to;
+        from_arr[c] = from;
+        to_arr[c]   = to;
+        c++;
+    }
+
+    int tmp_from, tmp_to;
+    for (int i = 0; i < c; i++) {   
+        for (int j = 0; j < c - i - 1; j++) { 
+            if (from_arr[j] > from_arr[j + 1]) {  
+                tmp_from = from_arr[j];
+                tmp_to   = to_arr[j];
+                from_arr[j] = from_arr[j + 1];
+                from_arr[j + 1] = tmp_from;
+                to_arr[j] = to_arr[j + 1];
+                to_arr[j + 1] = tmp_to;
+            }
+        }
+    }
+    c = 0;
+
+    
+    for (int k = 0; k < *N_links; k++) {
+        if(to_arr[k] != from_arr[k]) {
+            (*col_idx)[col_idx_ind] = to_arr[k];
             col_idx_ind++;
             row_ptr_value++;
             c++;
             // test if we have changed row
-            if (from_tmp < from) {
+            if (from_tmp < from_arr[k]) {
                 int *tmp_array = malloc(c*sizeof(int));
 
 
                 (*row_ptr)[row_ptr_ind] = row_ptr_value - 1;
                 row_ptr_ind++; 
-                from_tmp = from;
+                from_tmp = from_arr[k];
 
                 //Sorting col_idx for the current row
                 for (int i=(*row_ptr)[row_ptr_ind - 1]; i < (*row_ptr)[row_ptr_ind]; i++) {
@@ -115,66 +138,16 @@ void read_graph_from_file2 (char *filename, int *N, int *N_links, int **row_ptr,
                         }
                     }
                 }
-
+                // Updating col_idx with sorted values
                 for (int i=(*row_ptr)[row_ptr_ind]; i < (*row_ptr)[row_ptr_ind] + c; i++) {
                     (*col_idx)[i] = tmp_array[i];
-                }
                 c = 0;
                 free(tmp_array);
+                }
             }    
         }
     }
     (*row_ptr)[row_ptr_ind] = col_idx_ind;
-    /*
-    // Sorting col_idx
-    int c = 0;
-    int j;
-    int col_idx_j;
-    int col_idx_jp1;
-    for (int i = 0; i<*N_links; i++) {
-        for (j = *row_ptr[i]; j<*row_ptr[i+1] - 1; j++) {
-            if (*col_idx[j] > *col_idx[j+1]) {
-                col_idx_j = *col_idx[j];
-                col_idx_jp1 = *col_idx[j+1];
-
-                *col_idx[j] = col_idx_jp1;
-                *col_idx[j+1] = col_idx_j;
-            }
-
-        }
-    }
-    */
-}
-
-int main() {
-    // Testing of algorithms while developing
-    int N;
-    int N_links;
-    char **test_table;
-    int *row_ptr;
-    int *col_idx;
-    read_graph_from_file2("webgraph_test.txt", &N, &N_links, &row_ptr, &col_idx);
-    printf("col_idx: ");
-    for (int j=0; j<N_links; j++) {
-        printf("%d ", col_idx[j]);
-    }
-    printf(" \n");
-    printf("row_ptr: ");
-    for (int j=0; j<N+1; j++) {
-        printf("%d ", row_ptr[j]);
-    }
-    free(row_ptr);
-    free(col_idx);
-    /*
-    read_graph_from_file1("web-NotreDame-shorter.txt", &N, &test_table);
-    printf("mf\n");
-    for (int i=0; i<N; i++) {
-        for (int j=0; j<N; j++) {
-            printf("%d %d %d\n", i, j, test_table[i][j]);
-        }
-    }
-    free(test_table);
-    */
-
-   return 0;
+    free(from_arr);
+    free(to_arr);
 }
