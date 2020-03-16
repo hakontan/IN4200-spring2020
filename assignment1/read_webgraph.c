@@ -52,7 +52,7 @@ void read_graph_from_file1 (char *filename, int *N, char ***table2D) {
 
     while (fscanf(infile, "%d %d\n", &from, &to) != EOF) {
         if(to != from) {
-            (*table2D)[from][to] = 1;
+            (*table2D)[to][from] = 1;
         }
     }
 }
@@ -61,16 +61,8 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 
     int from;
     int to;
-    
-    int c = 0;
-    int from_tmp = 0;
-    int to_tmp =0;
-
-    int col_idx_value = 0;
-    int col_idx_ind = 0;
-
-    int row_ptr_ind = 1;
-    int row_ptr_value = 0;
+    int c;
+    int col_idx_index;
 
     FILE *infile;
     infile = fopen(filename, "r");
@@ -78,76 +70,38 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
     fscanf(infile, "%*[^\n]\n"); // skip one line
 
     fscanf(infile, "%*s %*s %d %*s %d \n", N, N_links);
-    int *from_arr = malloc(*N_links*sizeof(int));
-    int *to_arr = malloc(*N_links*sizeof(int));
-    //printf("%d %d\n", *N, *N_links);
-    *col_idx = malloc(*N_links*sizeof(int));
-    *row_ptr = malloc((*N + 1)*sizeof(int));
+    int *to_arr = malloc(*N_links * sizeof(int));
+    int *from_arr = malloc(*N_links * sizeof(int));
+    *col_idx = malloc(*N_links * sizeof(int));
+    *row_ptr = malloc((*N + 1) * sizeof(int));
     (*row_ptr)[0] = 0; // First row starts on index zero
 
     fscanf(infile, "%*[^\n]\n"); // skip one line
-    
+    c = 0;
     while (fscanf(infile, "%d %d\n", &from, &to) != EOF) {
-        from_arr[c] = from;
-        to_arr[c]   = to;
-        c++;
+        if(from != to) {
+              (*row_ptr)[to + 1]++;
+              to_arr[c]     = to;
+              from_arr[c]   = from;
+              c++;
+              //printf("%i\n", c);
+        }
     }
 
-    int tmp_from, tmp_to;
-    for (int i = 0; i < c; i++) {   
-        for (int j = 0; j < c - i - 1; j++) { 
-            if (from_arr[j] > from_arr[j + 1]) {  
-                tmp_from = from_arr[j];
-                tmp_to   = to_arr[j];
-                from_arr[j] = from_arr[j + 1];
-                from_arr[j + 1] = tmp_from;
-                to_arr[j] = to_arr[j + 1];
-                to_arr[j + 1] = tmp_to;
+    col_idx_index = 0;
+    for (int i=0; i<*N; i++) {
+        for (int j=0; j< *N_links; j++){
+            if (to_arr[j] == i) {
+                (*col_idx)[col_idx_index] = from_arr[j];
+                col_idx_index++;
             }
         }
     }
-    c = 0;
 
-    
-    for (int k = 0; k < *N_links; k++) {
-        if(to_arr[k] != from_arr[k]) {
-            (*col_idx)[col_idx_ind] = to_arr[k];
-            col_idx_ind++;
-            row_ptr_value++;
-            c++;
-            // test if we have changed row
-            if (from_tmp < from_arr[k]) {
-                int *tmp_array = malloc(c*sizeof(int));
-
-
-                (*row_ptr)[row_ptr_ind] = row_ptr_value - 1;
-                row_ptr_ind++; 
-                from_tmp = from_arr[k];
-
-                //Sorting col_idx for the current row
-                for (int i=(*row_ptr)[row_ptr_ind - 1]; i < (*row_ptr)[row_ptr_ind]; i++) {
-                    tmp_array[i] = (*col_idx)[i];
-                }
-                //Bubble sort algorithm
-                for (int i = 0; i < c; i++) {   
-                    for (int j = 0; j < c - i - 1; j++) { 
-                        if (tmp_array[j] > tmp_array[j + 1]) {  
-                            int tmp = tmp_array[j];
-                            tmp_array[j] = tmp_array[j + 1];
-                            tmp_array[j + 1] = tmp;
-                        }
-                    }
-                }
-                // Updating col_idx with sorted values
-                for (int i=(*row_ptr)[row_ptr_ind]; i < (*row_ptr)[row_ptr_ind] + c; i++) {
-                    (*col_idx)[i] = tmp_array[i];
-                c = 0;
-                free(tmp_array);
-                }
-            }    
-        }
+    for (int i = 1; i < (*N+1); i++) {     
+        (*row_ptr)[i] += (*row_ptr)[i-1];
     }
-    (*row_ptr)[row_ptr_ind] = col_idx_ind;
-    free(from_arr);
     free(to_arr);
+    free(from_arr);
 }
+
