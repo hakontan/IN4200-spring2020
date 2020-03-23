@@ -44,7 +44,6 @@ void read_graph_from_file1 (char *filename, int *N, char ***table2D) {
 
     // Initialize table2D as zeros.
     *table2D = allocate_2D_char(*N, *N);
-    
     //printf ("%d %d\n", *N, edges);
     
     fscanf(infile, "%*[^\n]\n"); // skip one line
@@ -52,7 +51,7 @@ void read_graph_from_file1 (char *filename, int *N, char ***table2D) {
 
     while (fscanf(infile, "%d %d\n", &from, &to) != EOF) {
         if(to != from) {
-            (*table2D)[to][from] = 1;
+            (*table2D)[from][to] = 1;
         }
     }
 }
@@ -84,7 +83,6 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
               to_arr[c]     = to;
               from_arr[c]   = from;
               c++;
-              //printf("%i\n", c);
         }
     }
 
