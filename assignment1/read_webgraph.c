@@ -44,7 +44,7 @@ void read_graph_from_file1 (char *filename, int *N, char ***table2D) {
 
     // Initialize table2D as zeros.
     *table2D = allocate_2D_char(*N, *N);
-    //printf ("%d %d\n", *N, edges);
+
     
     fscanf(infile, "%*[^\n]\n"); // skip one line
 
