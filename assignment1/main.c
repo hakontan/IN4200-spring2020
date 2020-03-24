@@ -18,7 +18,7 @@ int main() {
 
     for (int i = 0; i<N; i++) {
         for (int j = 0; j<N; j++) {
-            printf("%i ", test_table[j][i]);
+            printf("%i ", test_table[i][j]);
         }
         printf("\n");
     }

@@ -51,7 +51,7 @@ void read_graph_from_file1 (char *filename, int *N, char ***table2D) {
 
     while (fscanf(infile, "%d %d\n", &from, &to) != EOF) {
         if(to != from) {
-            (*table2D)[from][to] = 1;
+            (*table2D)[to][from] = 1;
         }
     }
 }

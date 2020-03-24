@@ -7,18 +7,20 @@ int count_mutual_links1 (int N, char **table2D, int *num_involvements) {
     num_involvements = calloc(N, sizeof(int));
     int c = 0;
     int num_involvements_per_row = 0;
+    int current;
 
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
-            if (table2D[j][i] == 1) {
+            if (table2D[i][j] == 1) {
                 for (int k = j + 1; k < N; k++) {
-                    mutual_links_tot += table2D[k][i];
+                    current = table2D[i][k];
+                    mutual_links_tot += current;
                     if (c == 0) {
-                        num_involvements_per_row += table2D[k][i];
+                        num_involvements_per_row += current;
                     }
                 }
             num_involvements[j] += num_involvements_per_row;
-            c++;         
+            c = 1;
             }
         }
         c = 0;
