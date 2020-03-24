@@ -9,10 +9,14 @@ int main() {
     
     int N;
     int N_links;
+    int num_webpages;
+    int n;
     char **test_table;
     int *row_ptr;
     int *col_idx;
     int *num_involvements;
+
+
     read_graph_from_file1("webgraph_test.txt", &N, &test_table);
     read_graph_from_file2("webgraph_test.txt", &N, &N_links, &row_ptr, &col_idx);
 
@@ -42,6 +46,8 @@ int main() {
     int mutual_links2 = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
     printf("# Mutual links 2 = %i\n", mutual_links2);
     
+    top_n_webpages(num_webpages, num_involvements, n);
+
     free(row_ptr);
     free(col_idx);
     return 0;
