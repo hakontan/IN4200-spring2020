@@ -43,12 +43,13 @@ int count_mutual_links2 (int N, int N_links, int *row_ptr, int *col_idx, int *nu
     int count = 0;
 
 
-    for (int i = 1; i < N +1; i++) {
-        n_pages = row_ptr[i] - row_ptr[i-1];
+    for (int i = 0; i < N; i++) {
+        n_pages = row_ptr[i + 1] - row_ptr[i];
         printf("%i\n", n_pages);
-
+        for (int j = row_ptr[i]; j < row_ptr[i + 1]; j++){
+            num_involvements[col_idx[j]] += n_pages - 1;
+        }
         if (n_pages > 1) {
-            num_involvements[col_idx[i-1]] += 1;
             while (n_pages > 1) {
                 count += n_pages - 1;
                 n_pages--;
