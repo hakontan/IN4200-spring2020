@@ -17,6 +17,9 @@ int count_mutual_links1 (int N, char **table2D, int *num_involvements) {
                 for (int k = j + 1; k < N; k++) {
                     current = table2D[i][k];
                     mutual_links_tot += current;
+
+                    // Only counting number of involvements per row for the first value on each row
+                    // as all other webpages on the row contains the same number of involvements.
                     if (first_val == true) {
                         num_involvements_per_row += current;
                     }
@@ -39,7 +42,6 @@ int count_mutual_links1 (int N, char **table2D, int *num_involvements) {
 }
 
 int count_mutual_links2 (int N, int N_links, int *row_ptr, int *col_idx, int *num_involvements) {
-    num_involvements = calloc(N, sizeof(int));
     int mutual_links_tot = 0;
     int n_pages;
     int count = 0;
@@ -52,6 +54,7 @@ int count_mutual_links2 (int N, int N_links, int *row_ptr, int *col_idx, int *nu
             num_involvements[col_idx[j]] += n_pages - 1;
         }
         if (n_pages > 1) {
+            // Doing a cumulative sum within each of the rows defined by row_ptr
             while (n_pages > 1) {
                 count += n_pages - 1;
                 n_pages--;
@@ -60,11 +63,13 @@ int count_mutual_links2 (int N, int N_links, int *row_ptr, int *col_idx, int *nu
             count = 0;
         }
     }
+    /*
     printf("num_involvements: ");
     for (int j=0; j<N; j++) {
         printf("%d ", num_involvements[j]);
     }
     printf("\n");
+    */
     return mutual_links_tot;
 }
 

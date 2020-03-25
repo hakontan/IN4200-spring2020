@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "read_webgraph.c"
 #include "countmutuallinks.c"
+#include "top_n_webpages.c"
 #include <time.h>
 
 int main() {
@@ -20,6 +21,8 @@ int main() {
     read_graph_from_file1("webgraph_test.txt", &N, &test_table);
     read_graph_from_file2("webgraph_test.txt", &N, &N_links, &row_ptr, &col_idx);
 
+
+    num_involvements = calloc(N, sizeof(int));
     for (int i = 0; i<N; i++) {
         for (int j = 0; j<N; j++) {
             printf("%i ", test_table[i][j]);
@@ -40,13 +43,14 @@ int main() {
     printf("\n");
 
     
-    int mutual_links1 = count_mutual_links1(N, test_table, num_involvements);
-    printf("# Mutual links 1 = %i\n", mutual_links1);
+    //int mutual_links1 = count_mutual_links1(N, test_table, &num_involvements);
+    //printf("# Mutual links 1 = %i\n", mutual_links1);
 
     int mutual_links2 = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
     printf("# Mutual links 2 = %i\n", mutual_links2);
-    
-    top_n_webpages(num_webpages, num_involvements, n);
+
+
+    top_n_webpages(N, num_involvements, 4);
 
     free(row_ptr);
     free(col_idx);
