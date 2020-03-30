@@ -1,5 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
+
 
 char** allocate_2D_char(int Nx, int Ny) {
     /*

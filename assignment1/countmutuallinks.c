@@ -1,18 +1,15 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdbool.h>
 
 int count_mutual_links1 (int N, char **table2D, int *num_involvements) {
     int mutual_links_tot = 0;
-    num_involvements = calloc(N, sizeof(int));
     bool first_val = true;
     int num_involvements_per_row = 0;
     int current;
     int num_threads = 8; //temporary hardcoding for testing the program
-
     #pragma omp parallel for private(current, first_val, num_involvements_per_row) reduction(+: mutual_links_tot, num_involvements[:N]) num_threads(num_threads)
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
+            printf("%i \n", j);;
             if (table2D[i][j] == 1) {
                 for (int k = j + 1; k < N; k++) {
                     current = table2D[i][k];
@@ -31,7 +28,7 @@ int count_mutual_links1 (int N, char **table2D, int *num_involvements) {
         first_val = true;
         num_involvements_per_row = 0;
     }
-
+    
     printf("num_involvements: ");
     for (int j=0; j<N; j++) {
         printf("%d ", num_involvements[j]);
@@ -63,13 +60,8 @@ int count_mutual_links2 (int N, int N_links, int *row_ptr, int *col_idx, int *nu
             count = 0;
         }
     }
-    /*
-    printf("num_involvements: ");
-    for (int j=0; j<N; j++) {
-        printf("%d ", num_involvements[j]);
-    }
-    printf("\n");
-    */
+    
+    
     return mutual_links_tot;
 }
 
