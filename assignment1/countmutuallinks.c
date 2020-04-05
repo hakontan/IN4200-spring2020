@@ -9,7 +9,6 @@ int count_mutual_links1 (int N, char **table2D, int *num_involvements) {
     #pragma omp parallel for private(current, first_val, num_involvements_per_row) reduction(+: mutual_links_tot, num_involvements[:N]) num_threads(num_threads)
     for (int i=0; i<N; i++) {
         for (int j=0; j<N; j++) {
-            printf("%i \n", j);;
             if (table2D[i][j] == 1) {
                 for (int k = j + 1; k < N; k++) {
                     current = table2D[i][k];
@@ -60,7 +59,6 @@ int count_mutual_links2 (int N, int N_links, int *row_ptr, int *col_idx, int *nu
             count = 0;
         }
     }
-    
     
     return mutual_links_tot;
 }

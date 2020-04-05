@@ -25,14 +25,14 @@ int main() {
 
     
     int *num_involvements = calloc(N, sizeof(int));
-    
+    /*
     for (int i = 0; i<N; i++) {
         for (int j = 0; j<N; j++) {
             printf("%i ", test_table[i][j]);
         }
         printf("\n");
     }
-
+    */
     /*
     printf("col_idx: ");
     for (int j=0; j<N_links; j++) {
@@ -59,8 +59,8 @@ int main() {
     }
     printf("\n");
     */
-    //top_n_webpages(N, num_involvements, 8);
-    pragma_top_n_webpages(N, num_involvements, 50);
+    top_n_webpages(N, num_involvements, 100);
+    pragma_top_n_webpages(N, num_involvements, 100);
     free(row_ptr);
     free(col_idx);
     return 0;
