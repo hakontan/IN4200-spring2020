@@ -24,8 +24,8 @@ int main() {
     read_graph_from_file2("hundred_nodes.txt", &N, &N_links, &row_ptr, &col_idx);
 
     
-    int *num_involvements = calloc(N, sizeof(int));
-
+    int *num_involvements1 = calloc(N, sizeof(int));
+    int *num_involvements2 = calloc(N, sizeof(int));
     // Prints for a 2D table showing we links
     /*
     for (int i = 0; i<N; i++) {
@@ -52,29 +52,29 @@ int main() {
     
 
     //printf("counting mutual links using table\n");
-    //start = omp_get_wtime();
-    //int mutual_links1 = count_mutual_links1(N, test_table, num_involvements);
-    //printf("Time elapsed counting mutual links from Table: %f seconds", (omp_get_wtime() - start));
+    start = omp_get_wtime();
+    int mutual_links1 = count_mutual_links1(N, test_table, num_involvements1);
+    printf("Time elapsed counting mutual links from Table: %f seconds", (omp_get_wtime() - start));
 
     //printf("# Mutual links 1 = %i\n", mutual_links1);
 
     printf("counting mutual links using CRS format\n");
-    int mutual_links2 = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
-    //printf("# Mutual links 2 = %i\n", mutual_links2);
+    int mutual_links2 = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements2);
+    printf("# Mutual links 2 = %i\n", mutual_links2);
 
     // Print showing num involvements
-    
+    /*
     printf("num_involvements: ");
     for (int j=0; j<N; j++) {
         printf("%d ", num_involvements[j]);
     }
     printf("\n");
-    
+    */
 
     printf("Top webpages parallelized\n");
-    //top_n_webpages(N, num_involvements, 5);
+    top_n_webpages(N, num_involvements, 10);
     printf("Top webpages parallelized\n");
-    //pragma_top_n_webpages(N, num_involvements, 1);
+    pragma_top_n_webpages(N, num_involvements, 10);
     free(row_ptr);
     free(col_idx);
     return 0;
