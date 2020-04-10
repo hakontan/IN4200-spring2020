@@ -18,13 +18,15 @@ int main() {
     char **test_table;
     int *row_ptr;
     int *col_idx;
+    double start;
 
-
-    read_graph_from_file1("hundred_nodes.txt", &N, &test_table);
-    //read_graph_from_file2("hundred_nodes.txt", &N, &N_links, &row_ptr, &col_idx);
+    //read_graph_from_file1("hundred_nodes.txt", &N, &test_table);
+    read_graph_from_file2("hundred_nodes.txt", &N, &N_links, &row_ptr, &col_idx);
 
     
     int *num_involvements = calloc(N, sizeof(int));
+
+    // Prints for a 2D table showing we links
     /*
     for (int i = 0; i<N; i++) {
         for (int j = 0; j<N; j++) {
@@ -33,7 +35,9 @@ int main() {
         printf("\n");
     }
     */
-    /*
+
+    // Prints for col_idx and row_ptr
+    
     printf("col_idx: ");
     for (int j=0; j<N_links; j++) {
         printf("%d ", col_idx[j]);
@@ -45,22 +49,32 @@ int main() {
         printf("%d ", row_ptr[j]);
     }
     printf("\n");
-    */
-    printf("counting mutual links\n");
-    int mutual_links1 = count_mutual_links1(N, test_table, num_involvements);
-    printf("# Mutual links 1 = %i\n", mutual_links1);
+    
 
-    //int mutual_links2 = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
+    //printf("counting mutual links using table\n");
+    //start = omp_get_wtime();
+    //int mutual_links1 = count_mutual_links1(N, test_table, num_involvements);
+    //printf("Time elapsed counting mutual links from Table: %f seconds", (omp_get_wtime() - start));
+
+    //printf("# Mutual links 1 = %i\n", mutual_links1);
+
+    printf("counting mutual links using CRS format\n");
+    int mutual_links2 = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements);
     //printf("# Mutual links 2 = %i\n", mutual_links2);
-    /*
+
+    // Print showing num involvements
+    
     printf("num_involvements: ");
     for (int j=0; j<N; j++) {
         printf("%d ", num_involvements[j]);
     }
     printf("\n");
-    */
-    top_n_webpages(N, num_involvements, 100);
-    pragma_top_n_webpages(N, num_involvements, 100);
+    
+
+    printf("Top webpages parallelized\n");
+    //top_n_webpages(N, num_involvements, 5);
+    printf("Top webpages parallelized\n");
+    //pragma_top_n_webpages(N, num_involvements, 1);
     free(row_ptr);
     free(col_idx);
     return 0;

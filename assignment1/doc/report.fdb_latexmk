@@ -1,8 +1,8 @@
 # Fdb version 3
-["pdflatex"] 1586457241 "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.tex" "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.pdf" "report" 1586457298
-  "/dev/null" 1586425190 0 d41d8cd98f00b204e9800998ecf8427e ""
-  "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.aux" 1586457241 1512 5c15dd6eb960bea4b6b6af0af700a05c ""
-  "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.tex" 1586457298 7016 d33fff576b5cb233c1db11c60d6beba6 ""
+["pdflatex"] 1586521535 "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.tex" "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.pdf" "report" 1586521536
+  "/dev/null" 1586512298 0 d41d8cd98f00b204e9800998ecf8427e ""
+  "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.aux" 1586521535 1826 c4ea6c190f6ec42ffea0f69c6a9e9af6 ""
+  "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.tex" 1586521534 8967 9f07ba4f5048510ecd4abd20ad3a2816 ""
   "/usr/share/texmf-dist/fonts/enc/dvips/cm-super/cm-super-t1.enc" 1572595918 2971 def0b6c1f0b107b3b936def894055589 ""
   "/usr/share/texmf-dist/fonts/map/fontname/texfonts.map" 1572595918 3332 103109f5612ad95229751940c61aada0 ""
   "/usr/share/texmf-dist/fonts/tfm/adobe/helvetic/phvr.tfm" 1572595918 2504 ba6584b616b92101c768b6c4ffb32dd0 ""
@@ -125,11 +125,11 @@
   "/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map" 1586440043 4572998 f9631eebba48c3ee98e5d310044b0a09 ""
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1586440020 8044938 969ce1e2b33bcd26414f960dd18d4011 ""
   "aastex62.cls" 1584025414 203680 8802f48dafe13dc8e28bf44a9f6b2be6 ""
-  "report.aux" 1586457241 1512 5c15dd6eb960bea4b6b6af0af700a05c "pdflatex"
-  "report.tex" 1586457298 7016 d33fff576b5cb233c1db11c60d6beba6 ""
+  "report.aux" 1586521535 1826 c4ea6c190f6ec42ffea0f69c6a9e9af6 "pdflatex"
+  "report.tex" 1586521534 8967 9f07ba4f5048510ecd4abd20ad3a2816 ""
   (generated)
-  "report.aux"
   "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.log"
-  "report.pdf"
   "report.log"
+  "report.pdf"
+  "report.aux"
   "/home/haakont/Documents/IN4200/IN4200-spring2020/assignment1/doc/report.pdf"

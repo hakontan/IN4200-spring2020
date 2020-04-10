@@ -76,9 +76,12 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
 
     fscanf(infile, "%*[^\n]\n"); // skip one line
     c = 0;
+
+    // Reading the file and storing row_ptr values as
+    // Also saving to and from values for making col_idx
     while (fscanf(infile, "%d %d\n", &from, &to) != EOF) {
         if(from != to) {
-              (*row_ptr)[to + 1]++;
+              (*row_ptr)[to + 1]++; // One more element linking to given web page
               to_arr[c]     = to;
               from_arr[c]   = from;
               c++;
@@ -94,7 +97,6 @@ void read_graph_from_file2(char *filename, int *N, int *N_links, int **row_ptr, 
             }
         }
     }
-
     for (int i = 1; i < (*N+1); i++) {     
         (*row_ptr)[i] += (*row_ptr)[i-1];
     }
