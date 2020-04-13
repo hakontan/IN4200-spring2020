@@ -5,8 +5,8 @@
 #include <stdbool.h>
 
 #include "read_webgraph.c"
-#include "countmutuallinks.c"
-#include "top_n_webpages.c"
+#include "countmutuallinks_omp.c"
+#include "top_n_webpages_omp.c"
 
 int main(int argc, char *argv[]) {
     // Testing of algorithms while developing
@@ -19,8 +19,12 @@ int main(int argc, char *argv[]) {
     int *row_ptr;
     int *col_idx;
     double start;
-    char* filename = argv[1];
-    
+    char *filename = argv[1];
+    int nr_threads = atoi(argv[2]);
+
+    omp_set_num_threads(nr_threads);
+
+
     printf("Reading web graph as 2D table\n");
     read_graph_from_file1(filename, &N, &test_table);
     printf("Reading web graph as CRS format\n");
@@ -55,10 +59,10 @@ int main(int argc, char *argv[]) {
     
 
     printf("Counting mutual links from 2D table\n");
-    int mutual_links1 = count_mutual_links1(N, test_table, num_involvements1);
+    int mutual_links1 = count_mutual_links1_omp(N, test_table, num_involvements1);
     printf("nr of mutual links: %i \n", mutual_links1);
     printf("Counting mutual links from CRS format\n");
-    int mutual_links2 = count_mutual_links2(N, N_links, row_ptr, col_idx, num_involvements2);
+    int mutual_links2 = count_mutual_links2_omp(N, N_links, row_ptr, col_idx, num_involvements2);
     printf("nr of mutual links: %i \n", mutual_links2);
 
     // Print showing num involvements
@@ -71,7 +75,7 @@ int main(int argc, char *argv[]) {
     
 
     printf("Top webpages\n");
-    top_n_webpages(N, num_involvements1, N);
+    top_n_webpages_omp(N, num_involvements1, N, nr_threads);
     free(row_ptr);
     free(col_idx);
     free(num_involvements1);

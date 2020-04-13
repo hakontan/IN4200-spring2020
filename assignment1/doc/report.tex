@@ -28,7 +28,7 @@
 In this project we are going to implement a function for analysing data froma web graph file. The goal of this project is to outline the algorithms required for reading such a file and organising the data in both a $2$D table and on a compressed row storage format. Using both of these formats for storing the data we will show algorithms for computing the number of times each web page participates in a mutual linkage with another web page. The final goal of this project is to rank the webpages in a web graph with respect to the number of mutual linkages every web page participates in. The algorithms were tested with and without parallelization using openMP.
  
 \section{Method} \label{sec:method}
-\subsection{Format of a web graph file.}
+\subsection{Format of a web graph file.}\label{sec:web}
 When storing the data from the web graph file, one has to take into account how a web graph file stores its information. An example of a web graph file is shown below.
 \begin{lstlisting}
 # Directed graph (each unordered pair of nodes is saved once): 8-webpages.txt 
@@ -67,7 +67,46 @@ When counting the top involvements we start by looking at every value in the \te
 
 When parallelizing this algorithm we create an \texttt{top\_n} array with \texttt{n * nr\_threads} elements. we then divide the \texttt{top\_involvements} between the threads assigned to the problem. Each of these threads repeat the same algorithm as for the sequential approach, but we now store more values in our \texttt{top\_n} array which is now only ranked within the given interval worked worked on by a given thread. We then repeat the same algorithm on one thread, but now we loop through the \texttt{top\_n} and store the rank of the web pages we want in a shorter \texttt{top\_n\_shorter} array of length $n$. Allthough we have to do the algorithm twice on two separate arrays, the idea behind this is that we can shorten the time taken to loop through the \texttt{top\_involvements} by parallelizing it as this is the array with the most elements.
 \section{Results}\label{sec:results}
+These results were produced using an Intel core i7-6700 processor with 8 threads using the gcc compiler (gcc (Arch Linux 9.3.0-1) 9.3.0). All functions were compiled using the -O3 flag. When testing all the function on the web graph shown in section \ref{sec:web}, the 2D table turned out as 
+\begin{equation*}
+    \begin{pmatrix}
+     0& 0 & 0& 0& 0& 0& 1& 0 \\
+     1& 0 & 1& 1& 0& 0& 0& 0 \\
+     1& 0 & 0& 0& 0& 0& 0& 0 \\
+     0& 1 & 0& 0& 0& 0& 0& 0 \\
+     0& 0 & 1& 1& 0& 0& 1& 0 \\
+     0& 0 & 0& 1& 1& 0& 0& 1 \\
+     0& 0 & 0& 0& 1& 0& 0& 1 \\
+     0& 0 & 0& 0& 1& 1& 1& 0
+    \end{pmatrix}.
+\end{equation*}
+For the same web graph the CRS format turned out as \texttt{col\_idx = [6 0 2 3 0 1 2 3 6 3 4 7 4 7 4 5 6]} and \texttt{row\_ptr  = [0 1 4 5 6 9 12 14 17]}. $13$ mutual links were counted with the number of involvements array turned out as \texttt{n\_involvements = [2 0 4 6 5 2 4 3 
+]}. The web pages ranked in terms of involvements turned out as 
+\begin{lstlisting}
+    Web page nr 4 had 6 involvements
+    Web page nr 5 had 5 involvements
+    Web page nr 7 had 4 involvements
+    Web page nr 3 had 4 involvements
+    Web page nr 8 had 3 involvements
+    Web page nr 6 had 2 involvements
+    Web page nr 1 had 2 involvements
+    Web page nr 2 had 0 involvements.
+\end{lstlisting}
+When timing the functions using a web graph containing $100$ nodes, our program clocked in at $0.165$ ms for storing the data as a $2$D array and $0.059$ ms for storing the data on a CRS format. The timing for the \texttt{count\_mutual\_links1} and \texttt{count\_mutual\_links2} functions using a varying number of threads is shown in figure \ref{fig:mutuallinks} using the same web graph with $100$ nodes. For the same web graph, figure \ref{fig:top_n} shows the time taken to rank the top $10$ web pages with a varying degrees of threads used in the paralellization. 
+\begin{figure}
+    \includegraphics[scale=0.8]{figures/mutuallinks.pdf}
+    \caption{Figure showing the time take for \texttt{count\_mutual\_links1} and \texttt{count\_mutual\_links2} functions on a webgraph with $100$ Nodes with a varying number of threads used.}
+    \label{fig:mutuallinks}
+\end{figure}
+\begin{figure}
+    \includegraphics[scale=0.8]{figures/top_n.pdf}
+    \caption{Figure showing the time take for the \texttt{top\_n} function on a webgraph with $100$ Nodes with a varying number of threads used. Note that here a slightly different algorithm had to be implemented for multiple threads.}
+    \label{fig:top_n}
+\end{figure}
+\section{Discussion}
+When determining the storage format, the CRS format is not only more memory efficient, but it also takes less time to execute. Allthough it is less intuitive than the 2D table format we did not find any other argument as to why one would not use the CRS format. Figure \ref{fig:mutuallinks} shows that the resulting algorithm from using the data stored on CRS format is also a lot more efficient than from reading the data from the $2$D table. Our results indicate that parallelizing has a lot more impact when reading the data from the $2$D table. from figure \ref{fig:mutuallinks} one can see that the $2$D table algorithm benefits the most when using $4$ threads before it flattens out. There is a minimal effect on parallelizing when reading the data from the CRS format. This can both be positive and negative. Not having to paralellize and still having better performance than the $2$D table method shows the benefits of the CRS format, but it can also indicate that our algorithm can be improved to better take advantage of parallelization. The timing when parallelizing the \texttt{top\_n} function shows that it benefits a lot from paralellization, but there aren't any benefits from using more than two threads. It is also worth noting that the file we tested was realatively short. Testing on a much larger file could make the sharing of the workload when looping over the \texttt{num\_involvements} much more effective.\\
 
+We have implemented a set of functions for ranking the top web pages in terms of mutual linkages from a web graph file. Our results show that the CRS format is a superior storage format for sparse matrices. We show that the algorithms benefit from paralellization, but further insight in the effect of this could be gained by testing on larger files allthough this can be time consuming.
 
 \bibliographystyle{aasjournal}
 %\begin{thebibliography}{}
