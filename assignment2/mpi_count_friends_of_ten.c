@@ -41,7 +41,7 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
                MPI_Datatype subarray;
 
                int start[2] = {0, (i-1) * (N_per_process + 3)};
-               int subsize[2] = {M, (N_per_process + 3)};
+               int subsize[2] = {M, (N_per_process)};
                int original_size[2] = {M, N};
 
                MPI_Type_create_subarray(2, original_size, subsize, start,
@@ -51,7 +51,7 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
                
           }
           friends_of_ten = count_friends_of_ten(M, N_per_process + N_rest, subarray_0);
-          
+
           free(subarray_0[0]);
           free(subarray_0);
           return friends_of_ten;
