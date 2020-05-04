@@ -8,9 +8,9 @@ int count_friends_of_ten(int M, int N ,int **v) {
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++) {
             // Checking horizontal axis
-            if (i < M - 3) {
+            if (j < N - 3) {
                 for (int k = 0; k < 3; k++) {
-                    sum += v[i+k][j];
+                    sum += v[i][j + k];
                 }
                 if (sum == 10) {
                     nr_friends += 1;
@@ -18,9 +18,9 @@ int count_friends_of_ten(int M, int N ,int **v) {
                 sum = 0;
             }
             //Checking vertical axis
-            if (j < N - 3) {
+            if (i < M - 3) {
                 for (int k = 0; k < 3; k++) {
-                    sum += v[i][j + k];
+                    sum += v[i + k][j];
                 }
                 if (sum == 10) {
                     nr_friends += 1;
