@@ -9,10 +9,11 @@ int main() {
     int N = 100;
     int M = 100;
     int friends_of_ten;
-    srand (time(NULL));
+    srand (1);
 
     int **v = allocate_2D_int(M, N);
-   
+
+   //Assigning v with random integers from zero to 9.
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++){
             v[i][j] = rand() % (9 + 1 - 0) + 0;
@@ -20,8 +21,9 @@ int main() {
     }
 
     friends_of_ten = count_friends_of_ten(M, N, v);
+
     /*
-    //Optional print for matrix
+    //Optional print for v-matrix
     for (int i = 0; i < M; i++) {
         for (int j = 0; j < N; j++) {
             printf("%i ", v[i][j]);
