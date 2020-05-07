@@ -11,7 +11,8 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
      int rank, size;
      int M_per_process, N_per_process;
      int M_rest, N_rest;
-     int friends_of_ten;
+     int friends_of_ten = 0;
+     int tot_num_triple_friends;
 
      MPI_Comm_size (MPI_COMM_WORLD, &size);
      MPI_Comm_rank (MPI_COMM_WORLD, &rank);
@@ -19,12 +20,10 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
      if (rank == 0) {
           // Dividing dimensions by size to calculate 
           // the size for each process.
-          M_per_process = M / size;
           N_per_process = N / size;
 
           // Calculating rest as one process may have to do extra work
           // depending on M and N.
-          M_rest = M % size;
           N_rest = N % size;
 
           //allocates subarray for process 0
@@ -41,47 +40,65 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
           for (int i=1; i<size; i++){
                //Send information to other process
                MPI_Send(&M, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
-               MPI_Send(&N_per_process, 1, MPI_INT, i, 1, MPI_COMM_WORLD);
-
+               MPI_Send(&N_per_process, 1, MPI_INT, i, 0, MPI_COMM_WORLD);
                // Splitting v array into subarray
                // and distributing to the other processes
                MPI_Datatype subarray;
 
                int start[2] = {0, (i-1) * (N_per_process)};
                // Need two extra along N dimension so that we count 
-               // the whole intented part of the matrix.
+               // the whole intented part of the subarray
                int subsize[2] = {M, (N_per_process + 2)}; 
                int original_size[2] = {M, N};
 
                MPI_Type_create_subarray(2, original_size, subsize, start,
                                         MPI_ORDER_C, MPI_INT, &subarray);
                MPI_Type_commit(&subarray);
-               MPI_Send(&(v[0][0]), 1, subarray, i, 2, MPI_COMM_WORLD);
-               
+               MPI_Send(&(v[0][0]), 1, subarray, i, 0, MPI_COMM_WORLD);
+          
           }
-          friends_of_ten = count_friends_of_ten(M, N_per_process + N_rest, subarray_0);
 
+          friends_of_ten = count_friends_of_ten(M, N_per_process + N_rest, subarray_0);
+          
+          char buffer[32]; // The filename buffer.
+          // Put "file" then k then ".txt" in to filename.
+          snprintf(buffer, sizeof(char) * 32, "fullfile%i.txt", rank);
+          FILE * fp;
+          /* open the file for writing*/
+          fp = fopen (buffer,"w");
+          
+          /* write 10 lines of text into the file stream*/
+          for(int i = 0; i < M;i++){
+               for (int j =0; j<N; j++) {
+                    fprintf (fp, "%i " , v[i][j]);
+               }
+               fprintf(fp, "\n");
+          }
+          
           free(subarray_0[0]);
           free(subarray_0);
-          return friends_of_ten;
      }
 
      if (rank > 0) {   
           MPI_Recv(&M, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-          MPI_Recv(&N_per_process, 1, MPI_INT, 0, 1, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+          MPI_Recv(&N_per_process, 1, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
           
-          //Allocating memory for recieving the subarray from root process
+          // Allocating memory for recieving the subarray from root process
           int **subarray = allocate_2D_int(M, N_per_process + 2);
 
-          
           MPI_Recv(&(subarray[0][0]), M * (N_per_process + 2), MPI_INT,
-                   0, 2, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                   0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
           friends_of_ten = count_friends_of_ten(M, N_per_process + 2, subarray);
 
           free(subarray[0]);
           free(subarray);
-          return friends_of_ten;
+
      }
 
+
+     MPI_Allreduce(&friends_of_ten, &tot_num_triple_friends,
+                    size, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
+     
+     return tot_num_triple_friends;
 }

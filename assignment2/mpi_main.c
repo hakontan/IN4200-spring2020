@@ -31,7 +31,6 @@ int main (int argc, char **argv) {
         }
 
     num_triple_friends = mpi_count_friends_of_ten(M, N, v);
-
     free(v[0]);
     free(v);
     }
@@ -43,16 +42,7 @@ int main (int argc, char **argv) {
 
     printf("MPI rank <%d>: number of triple friends=%d\n",
             rank, num_triple_friends);
-    MPI_Barrier(MPI_COMM_WORLD);
 
-
-    int tot_num_triple_friends = 0;
-    MPI_Reduce(&num_triple_friends, &tot_num_triple_friends,
-                size, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
-    if (rank==0) {
-        printf("Total number of triple friends=%d\n",
-                tot_num_triple_friends);
-    }
     MPI_Finalize ();
 
     return 0;
