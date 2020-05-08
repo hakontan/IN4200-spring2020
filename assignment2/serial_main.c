@@ -6,6 +6,11 @@
 #include "count_friends_of_ten.c"
 
 int main(int argc, char **argv) {
+    /*
+    Program that creates a random 2D array of size MxN
+    and counts friends of ten.
+    Input arguments M and N are given through the command line.
+    */
     int M = atof(argv[1]);
     int N = atof(argv[2]);
     

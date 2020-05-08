@@ -7,7 +7,11 @@
 #include "mpi_count_friends_of_ten.c"
 
 int main (int argc, char **argv) {
-
+    /*
+    Program that creates a random 2D array of size MxN
+    and divides it among MPI processes to count friends of ten.
+    Input arguments M and N are given through the command line.
+    */
     int M = 0, N = 0, rank, size, num_triple_friends=0;
     int **v=NULL;
 
@@ -26,7 +30,7 @@ int main (int argc, char **argv) {
 
         // Allocating v_array to be sent into counting
         // function and be distributed to all processes.
-        int** v = allocate_2D_int(M, N);
+        v = allocate_2D_int(M, N);
         
         //Assigning v with random integers from zero to 9.
         for (int i = 0; i < M; i++) {

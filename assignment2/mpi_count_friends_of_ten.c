@@ -9,8 +9,8 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
      */
 
      int rank, size;
-     int M_per_process, N_per_process;
-     int M_rest, N_rest;
+     int N_per_process;
+     int N_rest;
      int friends_of_ten = 0;
      int tot_num_triple_friends;
 
@@ -18,12 +18,12 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
      MPI_Comm_rank (MPI_COMM_WORLD, &rank);
 
      if (rank == 0) {
-          // Dividing dimensions by size to calculate 
+          // Dividing N dimension by size to calculate 
           // the size for each process.
           N_per_process = N / size;
 
           // Calculating rest as one process may have to do extra work
-          // depending on M and N.
+          // depending on the size of N.
           N_rest = N % size;
 
           //allocates subarray for process 0
