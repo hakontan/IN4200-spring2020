@@ -16,9 +16,14 @@ int main (int argc, char **argv) {
     MPI_Comm_rank (MPI_COMM_WORLD, &rank);
 
     if (rank==0) {
-        srand (1);
-        M = 100;
-        N = 100;
+        srand (time(NULL));
+        M = atof(argv[1]);
+        N = atof(argv[2]);
+        if (size > N) {
+            printf("Value of N has to be larger than the amount of MPI processes!");
+            return 1;
+        }
+
         // Allocating v_array to be sent into counting
         // function and be distributed to all processes.
         int** v = allocate_2D_int(M, N);

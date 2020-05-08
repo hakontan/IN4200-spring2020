@@ -5,11 +5,12 @@
 #include "utils.c"
 #include "count_friends_of_ten.c"
 
-int main() {
-    int M = 100;
-    int N = 100;
+int main(int argc, char **argv) {
+    int M = atof(argv[1]);
+    int N = atof(argv[2]);
+    
     int friends_of_ten;
-    srand (1);
+    srand (time(NULL));
 
     //int **v = example_array(M, N);
     

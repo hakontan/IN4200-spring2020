@@ -2,6 +2,9 @@
 
 
 int count_friends_of_ten(int M, int N ,int **v) {
+    /*
+    Program that counts friends of ten for an MxN matrix
+    */
     int sum = 0;
     int nr_friends = 0;
 

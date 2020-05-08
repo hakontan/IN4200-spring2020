@@ -1,5 +1,5 @@
 
-#include "count_friends_of_ten.c" 
+#include "mpi_count_subarray.c" 
 
 int mpi_count_friends_of_ten(int M, int N ,int **v) {
      /*
@@ -55,25 +55,12 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
                                         MPI_ORDER_C, MPI_INT, &subarray);
                MPI_Type_commit(&subarray);
                MPI_Send(&(v[0][0]), 1, subarray, i, 0, MPI_COMM_WORLD);
+               MPI_Type_free(&subarray);
           
           }
 
-          friends_of_ten = count_friends_of_ten(M, N_per_process + N_rest, subarray_0);
+          friends_of_ten = mpi_count_subarray(M, N_per_process + N_rest, subarray_0);
           
-          char buffer[32]; // The filename buffer.
-          // Put "file" then k then ".txt" in to filename.
-          snprintf(buffer, sizeof(char) * 32, "fullfile%i.txt", rank);
-          FILE * fp;
-          /* open the file for writing*/
-          fp = fopen (buffer,"w");
-          
-          /* write 10 lines of text into the file stream*/
-          for(int i = 0; i < M;i++){
-               for (int j =0; j<N; j++) {
-                    fprintf (fp, "%i " , v[i][j]);
-               }
-               fprintf(fp, "\n");
-          }
           
           free(subarray_0[0]);
           free(subarray_0);
@@ -89,11 +76,11 @@ int mpi_count_friends_of_ten(int M, int N ,int **v) {
           MPI_Recv(&(subarray[0][0]), M * (N_per_process + 2), MPI_INT,
                    0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
 
-          friends_of_ten = count_friends_of_ten(M, N_per_process + 2, subarray);
-
+          friends_of_ten = mpi_count_subarray(M, N_per_process + 2, subarray);
+     
+          
           free(subarray[0]);
           free(subarray);
-
      }
 
 
